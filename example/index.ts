@@ -18,6 +18,18 @@ export type A = {
   z: boolean
 }
 
+export declare namespace InlayHintKind {
+    /**
+     * An inlay hint that for a type annotation.
+     */
+    const Type = 1;
+    /**
+     * An inlay hint that is for a parameter.
+     */
+    const Parameter = 2;
+    function is(value: number): value is InlayHintKind;
+}
+
 /**
  * Example doc
  */
@@ -35,22 +47,22 @@ type M = {[K in keyof T]: 1 }
 // ----------------------------------------------------------------------------
 // Typescript Base
 // ----------------------------------------------------------------------------
-Print('Typescript', Code)
+// Print('Typescript', Code)
 // ----------------------------------------------------------------------------
 // TypeBox Transform
 // ----------------------------------------------------------------------------
 Print('TypeScript To TypeBox', Codegen.TypeScriptToTypeBox.Generate(Code))
-// ----------------------------------------------------------------------------
-// Model Transform
-// ----------------------------------------------------------------------------
-const model = Codegen.TypeScriptToModel.Generate(Code)
-Print('TypeScript To Inline Model', model)
-Print('Model To JsonSchema Inline', Codegen.ModelToJsonSchema.Generate(model))
-Print('Model To JavaScript', Codegen.ModelToJavaScript.Generate(model))
-Print('Model To TypeScript', Codegen.ModelToTypeScript.Generate(model))
-Print('Model To Valibot', Codegen.ModelToValibot.Generate(model))
-Print('Model To Value', Codegen.ModelToValue.Generate(model))
-Print('Model To Yup', Codegen.ModelToYup.Generate(model))
-Print('Model To Zod', Codegen.ModelToZod.Generate(model))
-Print('Model To ArkType', Codegen.ModelToArkType.Generate(model))
-Print('Model To Effect', Codegen.ModelToEffect.Generate(model))
+// // ----------------------------------------------------------------------------
+// // Model Transform
+// // ----------------------------------------------------------------------------
+// const model = Codegen.TypeScriptToModel.Generate(Code)
+// Print('TypeScript To Inline Model', model)
+// Print('Model To JsonSchema Inline', Codegen.ModelToJsonSchema.Generate(model))
+// Print('Model To JavaScript', Codegen.ModelToJavaScript.Generate(model))
+// Print('Model To TypeScript', Codegen.ModelToTypeScript.Generate(model))
+// Print('Model To Valibot', Codegen.ModelToValibot.Generate(model))
+// Print('Model To Value', Codegen.ModelToValue.Generate(model))
+// Print('Model To Yup', Codegen.ModelToYup.Generate(model))
+// Print('Model To Zod', Codegen.ModelToZod.Generate(model))
+// Print('Model To ArkType', Codegen.ModelToArkType.Generate(model))
+// Print('Model To Effect', Codegen.ModelToEffect.Generate(model))

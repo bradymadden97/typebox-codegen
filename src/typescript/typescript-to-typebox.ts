@@ -126,7 +126,8 @@ export namespace TypeScriptToTypeBox {
     return blockLevel === 0 && (useExportsEverything || (node.modifiers !== undefined && node.modifiers.find((modifier) => modifier.getText() === 'export') !== undefined))
   }
   function IsNamespace(node: Ts.ModuleDeclaration) {
-    return node.flags === Ts.NodeFlags.Namespace
+    // @ts-expect-error
+    return node.flags === Ts.NodeFlags.Namespace || node.flags === 33554464 /* declare ? */
   }
   // ------------------------------------------------------------------------------------------------------------
   // Options
@@ -496,9 +497,13 @@ export namespace TypeScriptToTypeBox {
   function* ModuleDeclaration(node: Ts.ModuleDeclaration): IterableIterator<string> {
     const export_specifier = IsExport(node) ? 'export ' : ''
     const module_specifier = IsNamespace(node) ? 'namespace' : 'module'
-    yield `${export_specifier}${module_specifier} ${node.name.getText()} {`
-    yield* Visit(node.body)
-    yield `}`
+
+    const inner = yield* Visit(node.body)
+    if (inner) {
+      yield `${export_specifier}${module_specifier} ${node.name.getText()} {`
+      yield inner
+      yield `}`
+    }
   }
   function* ModuleBlock(node: Ts.ModuleBlock): IterableIterator<string> {
     for (const statement of node.statements) {
