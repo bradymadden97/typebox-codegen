@@ -574,6 +574,7 @@ export namespace TypeScriptToTypeBox {
     if (node.kind === Ts.SyntaxKind.NeverKeyword) return yield `Type.Never()`
     if (node.kind === Ts.SyntaxKind.NullKeyword) return yield `Type.Null()`
     if (node.kind === Ts.SyntaxKind.VoidKeyword) return yield `Type.Void()`
+    if (node.kind === Ts.SyntaxKind.ObjectKeyword) return yield `Type.Any()`
     if (node.kind === Ts.SyntaxKind.EndOfFileToken) return
     if (node.kind === Ts.SyntaxKind.SyntaxList) {
       for (const child of node.getChildren()) {
