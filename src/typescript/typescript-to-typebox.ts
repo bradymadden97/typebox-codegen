@@ -140,9 +140,17 @@ export namespace TypeScriptToTypeBox {
     }
     return ''
   }
+  var doctrine = require('doctrine')
   function ResolveOptions(node: Ts.TypeAliasDeclaration | Ts.PropertySignature | Ts.InterfaceDeclaration): Record<string, unknown> {
     const content = ResolveJsDocComment(node)
-    return JsDoc.Parse(content)
+    const description = doctrine.parse(content, { unwrap: true }).description
+
+    const results = JsDoc.Parse(content)
+    if (description && description.length) {
+      results['description'] = description
+    }
+
+    return results
   }
   // ------------------------------------------------------------------------------------------------------------
   // Identifiers

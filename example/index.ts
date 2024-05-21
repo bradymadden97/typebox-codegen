@@ -18,6 +18,9 @@ export type A = {
   z: boolean
 }
 
+/**
+ * Example doc
+ */
 export type B = {
   a: number,
   b: string,
