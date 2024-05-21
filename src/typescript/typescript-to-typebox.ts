@@ -148,7 +148,8 @@ export namespace TypeScriptToTypeBox {
 
     const results = JsDoc.Parse(content)
     if (description && description.length) {
-      results['description'] = description
+      // replace multiple \n with a single ' '
+      results['description'] = description.replace(/\n\s*\n/g, '\n').replace('\n', ' ')
     }
 
     return results
@@ -316,9 +317,9 @@ export namespace TypeScriptToTypeBox {
     const exports = IsExport(node) ? 'export ' : ''
     const members = node.members.map((member) => member.getText()).join(', ')
     const enumType = `${exports}enum Enum${node.name.getText()} { ${members} }`
-    const staticType = `${exports}type ${node.name.getText()} = Static<typeof ${node.name.getText()}>`
+    // const staticType = `${exports}type ${node.name.getText()} = Static<typeof ${node.name.getText()}>`
     const type = `${exports}const ${node.name.getText()} = Type.Enum(Enum${node.name.getText()})`
-    yield [enumType, '', staticType, type].join('\n')
+    yield [enumType, '', type].join('\n')
   }
   function PropertiesFromTypeElementArray(members: Ts.NodeArray<Ts.TypeElement>): string {
     const properties = members.filter((member) => !Ts.isIndexSignatureDeclaration(member))
@@ -362,12 +363,12 @@ export namespace TypeScriptToTypeBox {
       const identifier = ResolveIdentifier(node)
       const options = useIdentifiers ? { ...ResolveOptions(node), $id: identifier } : { ...ResolveOptions(node) }
       const members = PropertiesFromTypeElementArray(node.members)
-      const staticDeclaration = `${exports}type ${node.name.getText()} = Static<typeof ${node.name.getText()}>`
+      // const staticDeclaration = `${exports}type ${node.name.getText()} = Static<typeof ${node.name.getText()}>`
       const rawTypeExpression = IsRecursiveType(node) ? `Type.Recursive(This => Type.Object(${members}))` : `Type.Object(${members})`
       const typeExpression = heritage.length === 0 ? rawTypeExpression : `Type.Composite([${heritage.join(', ')}, ${rawTypeExpression}])`
       const type = InjectOptions(typeExpression, options)
       const typeDeclaration = `${exports}const ${node.name.getText()} = ${type}`
-      yield `${staticDeclaration}\n${typeDeclaration}`
+      yield `${typeDeclaration}`
     }
     recursiveDeclaration = null
   }
@@ -386,18 +387,18 @@ export namespace TypeScriptToTypeBox {
       const type_1 = isRecursiveType ? `Type.Recursive(This => ${type_0})` : type_0
       const type_2 = InjectOptions(type_1, options)
       const names = node.typeParameters.map((param) => Collect(param)).join(', ')
-      const staticDeclaration = `${exports}type ${node.name.getText()}<${constraints}> = Static<ReturnType<typeof ${node.name.getText()}<${names}>>>`
+      // const staticDeclaration = `${exports}type ${node.name.getText()}<${constraints}> = Static<ReturnType<typeof ${node.name.getText()}<${names}>>>`
       const typeDeclaration = `${exports}const ${node.name.getText()} = <${constraints}>(${parameters}) => ${type_2}`
-      yield `${staticDeclaration}\n${typeDeclaration}`
+      yield `${typeDeclaration}`
     } else {
       const exports = IsExport(node) ? 'export ' : ''
       const options = useIdentifiers ? { $id: ResolveIdentifier(node), ...ResolveOptions(node) } : { ...ResolveOptions(node) }
       const type_0 = Collect(node.type)
       const type_1 = isRecursiveType ? `Type.Recursive(This => ${type_0})` : type_0
       const type_2 = InjectOptions(type_1, options)
-      const staticDeclaration = `${exports}type ${node.name.getText()} = Static<typeof ${node.name.getText()}>`
+      // const staticDeclaration = `${exports}type ${node.name.getText()} = Static<typeof ${node.name.getText()}>`
       const typeDeclaration = `${exports}const ${node.name.getText()} = ${type_2}`
-      yield `${staticDeclaration}\n${typeDeclaration}`
+      yield `${typeDeclaration}`
     }
     recursiveDeclaration = null
   }
